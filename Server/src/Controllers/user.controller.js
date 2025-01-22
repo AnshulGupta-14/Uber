@@ -12,7 +12,7 @@ export const registerUser = async (req, res) => {
     throw new Error("All fields must be provided!");
   }
 
-  const existedUser = await User.findOne({email});
+  const existedUser = await User.findOne({ email });
   if (existedUser) {
     if (existedUser.email === email.toLowerCase()) {
       throw new Error("User already exists with the same email");
@@ -37,12 +37,22 @@ export const loginUser = async (req, res) => {
 
   const { email, password } = req.body;
   if (!email || !password) {
-    throw new Error("Email and password are required!");
+    return res.status(404).json("Email and password are required!");
   }
-  const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+  const user = await User.findOne({ email: email.toLowerCase() }).select(
+    "+password"
+  );
   if (!user || !(await user.isPasswordCorrect(password))) {
-    throw new Error("Invalid email or password!");
+    return res.status(404).json("Invalid email or password!");
   }
   const token = user.generateAccessToken();
-  res.status(200).json({ user, token });
-}
+  res.cookie("token", token).status(200).json({ user, token });
+};
+
+export const getUserProfile = async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return res.status(401).json("User not authenticated!");
+  }
+  return res.status(200).json({ user });
+};
