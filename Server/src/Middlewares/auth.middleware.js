@@ -9,7 +9,7 @@ export const authUser = async (req, res, next) => {
     return res.status(401).json({ msg: "Not authorized, token is required" });
   }
 
-  const isBlacklisted = blackList.findOne({ token });
+  const isBlacklisted = await blackList.findOne({ token });
   if (isBlacklisted) {
     return res.status(401).json({ msg: "Unauthorized" });
   }
