@@ -162,3 +162,102 @@ If there is an internal server error, returns an error message.
   "error": "Internal Server Error"
 }
 ```
+
+# User Profile Endpoint Documentation
+
+## Endpoint: `/user/profile`
+
+### Method: `GET`
+
+### Description:
+This endpoint retrieves the profile information of the authenticated user. It requires a valid JWT token to be included in the request.
+
+### Authentication:
+Requires a valid JWT token in one of the following formats:
+- Bearer token in Authorization header: `Authorization: Bearer <token>`
+- Token in HTTP-only cookie
+
+### Responses:
+
+#### Success (200 OK):
+Returns the user profile data.
+
+```json
+{
+  "user": {
+    "_id": "60c72b2f9b1e8b001c8e4b8b",
+    "fullname": "John Doe",
+    "email": "john.doe@example.com",
+    "createdAt": "2021-06-14T07:00:00.000Z",
+    "updatedAt": "2021-06-14T07:00:00.000Z"
+  }
+}
+```
+
+#### Client Error (401 Unauthorized):
+If no token is provided or the token is invalid.
+
+```json
+{
+  "msg": "Not authorized, token is required"
+}
+```
+
+#### Client Error (404 Not Found):
+If the user associated with the token is not found.
+
+```json
+{
+  "msg": "User not found"
+}
+```
+
+#### Server Error (500 Internal Server Error):
+If there is an internal server error.
+
+```json
+{
+  "error": "Internal Server Error"
+}
+```
+
+# User Logout Endpoint Documentation
+
+## Endpoint: `/user/logout`
+
+### Method: `POST`
+
+### Description:
+This endpoint logs out the user by invalidating their JWT token. The token is added to a blacklist and the HTTP-only cookie is cleared.
+
+### Authentication:
+Requires a valid JWT token in one of the following formats:
+- Bearer token in Authorization header: `Authorization: Bearer <token>`
+- Token in HTTP-only cookie
+
+### Responses:
+
+#### Success (200 OK):
+Returns a success message when the user is logged out.
+
+```json
+"User logged out successfully!"
+```
+
+#### Client Error (401 Unauthorized):
+If no token is provided.
+
+```json
+{
+  "msg": "Not authorized, token is required"
+}
+```
+
+#### Server Error (500 Internal Server Error):
+If there is an internal server error.
+
+```json
+{
+  "error": "Internal Server Error"
+}
+```
