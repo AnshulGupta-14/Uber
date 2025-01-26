@@ -1,3 +1,4 @@
+import { blackList } from "../Models/blacklist.model.js";
 import { User } from "../Models/user.model.js";
 import { validationResult } from "express-validator";
 
@@ -55,4 +56,15 @@ export const getUserProfile = async (req, res) => {
     return res.status(401).json("User not authenticated!");
   }
   return res.status(200).json({ user });
+};
+
+export const logoutUser = async (req, res) => {
+  const token = req.cookies.token || req.headers.authorization.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ msg: "Not authorized, token is required" });
+  }
+
+  await blackList.create({ token });
+  res.clearCookie("token").status(200).json("User logged out successfully!");
 };
